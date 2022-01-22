@@ -95,16 +95,11 @@ def normalize(founded_files,founded_folders, path_to_folder_1):
         else:
             ss=j[c:].translate(TRANS)
             #print(ss)
-            #e=re.sub(r'([^\w^\\])', '_', fr"{b}")
+            ss=re.sub(r'[^\w^\\]', '_', fr"{ss}")
             founded_folders_normalized.append(fr'{j[0:c]}{ss}')
       
           
     return   founded_files_normalized, founded_folders_normalized
-
-
-
-
-
 
 
 def files_rename(founded_files_normalized, founded_files):
@@ -136,6 +131,7 @@ def files_collect_images(founded_files, path_to_folder):
              
             list_of_images.append(f"{k[0]}{k[1]}")
             if not pl.Path(fr"{path_to_folder}\images").exists():
+
                 os.mkdir(fr'{path_to_folder}\images')
                
 
@@ -149,6 +145,7 @@ def files_collect_video(founded_files, path_to_folder):
         
         if (k[1].casefold()=='.AVI'.casefold() or k[1].casefold()=='.MP4'.casefold() or k[1].casefold()=='.MOV'.casefold() or k[1].casefold()=='.MKV'.casefold())\
              and fr"{path_to_folder}\video" not in  fr"{k[2]}":
+
             list_of_video.append(f"{k[0]}{k[1]}")
             if not pl.Path(fr"{path_to_folder}\video").exists():
                 os.mkdir(fr'{path_to_folder}\video')
@@ -165,6 +162,7 @@ def files_collect_documents(founded_files, path_to_folder):
         if (k[1].casefold()=='.DOC'.casefold() or k[1].casefold()=='.DOCX'.casefold() or k[1].casefold()=='.TXT'.casefold() or k[1].casefold()=='.PDF'.casefold()) \
             or k[1].casefold()=='.XLSX'.casefold() or k[1].casefold()=='.PPTX'.casefold() and fr"{path_to_folder}\documents" not in  fr"{k[2]}":
             list_of_documents.append(f"{k[0]}{k[1]}") 
+
             if not pl.Path(fr"{path_to_folder}\documents").exists():
                 os.mkdir(fr'{path_to_folder}\documents')
 
@@ -178,6 +176,7 @@ def files_collect_audio(founded_files, path_to_folder):
         
         if (k[1].casefold()=='.MP3'.casefold() or k[1].casefold()=='.OGG'.casefold() or k[1].casefold()=='.WAV'.casefold() or k[1].casefold()=='.AMR'.casefold())\
               and fr"{path_to_folder}\audio" not in  fr"{k[2]}":
+
             list_of_audio.append(f"{k[0]}{k[1]}")
             if not pl.Path(fr"{path_to_folder}\audio").exists():
                 os.mkdir(fr'{path_to_folder}\audio')
@@ -192,6 +191,7 @@ def files_collect_archives(founded_files, path_to_folder):
         
         if (k[1].casefold()=='.ZIP'.casefold() or k[1].casefold()=='.GZ'.casefold() or k[1].casefold()=='.TAR'.casefold())  and fr"{path_to_folder}\archives" not in  fr"{k[2]}":
             list_of_archives.append(f"{k[0]}{k[1]}") 
+
             if not pl.Path(fr"{path_to_folder}\archives").exists():
                 os.mkdir(fr'{path_to_folder}\archives')
 
@@ -210,15 +210,18 @@ def files_collect_archives(founded_files, path_to_folder):
 def files_collect_other_files(founded_files, path_to_folder):
     list_of_unknown_suffix=set()
     list_of_known_suffix=set()
+    
     list_of_other_files=[]
     for k in founded_files:
         list_of_known_suffix.add(k[1])
-        if      k[1].casefold()!='.ZIP'.casefold()  and k[1].casefold()!='.GZ'.casefold()   and k[1].casefold()!='.TAR'.casefold()\
+        if 'archives' in k[2] or 'video' in k[2] or 'audio' in k[2] or 'documents' in k[2] or 'images' in k[2]:
+            continue
+        elif    k[1].casefold()!='.ZIP'.casefold()  and k[1].casefold()!='.GZ'.casefold()   and k[1].casefold()!='.TAR'.casefold()\
             and k[1].casefold()!='.MP3'.casefold()  and k[1].casefold()!='.OGG'.casefold()  and k[1].casefold()!='.WAV'.casefold()  and k[1].casefold()!='.AMR'.casefold()\
             and k[1].casefold()!='.DOC'.casefold()  and k[1].casefold()!='.DOCX'.casefold() and k[1].casefold()!='.TXT'.casefold()  and k[1].casefold()!='.PDF'.casefold()\
             and k[1].casefold()!='.XLSX'.casefold() and k[1].casefold()!='.PPTX'.casefold() and k[1].casefold()!='.AVI'.casefold()  and k[1].casefold()!='.MP4'.casefold()\
             and k[1].casefold()!='.MOV'.casefold()  and k[1].casefold()!='.MKV'.casefold()  and k[1].casefold()!='.JPEG'.casefold() and k[1].casefold()!='.PNG'.casefold()\
-            and k[1].casefold()!='.JPG'.casefold()  and k[1].casefold()!='.SVG'.casefold():      
+            and k[1].casefold()!='.JPG'.casefold()  and k[1].casefold()!='.SVG'.casefold() :      
             list_of_other_files.append(f"{k[0]}{k[1]}")
             if not pl.Path(fr"{path_to_folder}\other_files").exists():
                 os.mkdir(fr'{path_to_folder}\other_files')
@@ -236,8 +239,10 @@ def del_empty_dirs(path_to_folder_1):
     
     for d in os.listdir(path):
         a = os.path.join(path, d)
+
         if os.path.isdir(a):
             del_empty_dirs(a)
+
             if not os.listdir(a) and 'archives' not in a and 'video' not in a and 'audio' not in a and 'documents' not in a and 'images' not in a:
                 os.rmdir(a)
 
@@ -252,9 +257,11 @@ founded_files_normalized, founded_folders_normalized= normalize(founded_files,fo
 
 files_rename(founded_files_normalized, founded_files)
 founded_files.clear()
+
 founded_files_normalized.clear()
 founded_folders_normalized.clear()
 founded_folders.clear()
+
 
 path_to_folder_1=path_verification(path_to_folder)
 
@@ -265,26 +272,23 @@ founded_files_normalized, founded_folders_normalized= normalize(founded_files,fo
 
 folders_rename(founded_folders, founded_folders_normalized)
 founded_folders_normalized.clear()
+
 founded_folders.clear()
 founded_files_normalized.clear()
-founded_files.clear()
 
+founded_files.clear()
 path_to_folder_1, founded_files, founded_folders = find_files(path_to_folder_1)
 
 
 
 files_collect_images(founded_files, path_to_folder)
 files_collect_video(founded_files, path_to_folder)
+
 files_collect_documents(founded_files, path_to_folder)
 files_collect_audio(founded_files, path_to_folder)
+
 files_collect_archives(founded_files, path_to_folder)
 files_collect_other_files(founded_files, path_to_folder)
+
 del_empty_dirs(path_to_folder_1)
 #print(founded_files)
-
-
-
-
-
-def sorting(string):
-    pass
