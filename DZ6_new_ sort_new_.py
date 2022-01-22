@@ -77,7 +77,7 @@ def normalize(founded_files,founded_folders, path_to_folder_1):
     
     founded_files_normalized=[]
     founded_folders_normalized=[]
-     
+    c = len(path_to_folder_1)+1 
 
     
     for i in founded_files:
@@ -93,10 +93,10 @@ def normalize(founded_files,founded_folders, path_to_folder_1):
         if 'archives' in j or 'video' in j or 'audio' in j or 'documents' in j or 'images' in j:
             founded_folders_normalized.append(fr'{j}')
         else:
-            ss=j.translate(TRANS)
+            ss=j[c:].translate(TRANS)
             #print(ss)
             #e=re.sub(r'([^\w^\\])', '_', fr"{b}")
-            founded_folders_normalized.append(fr'{ss}')
+            founded_folders_normalized.append(fr'{j[0:c]}{ss}')
       
           
     return   founded_files_normalized, founded_folders_normalized
