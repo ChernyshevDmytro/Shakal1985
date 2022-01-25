@@ -1,4 +1,4 @@
-import clean_folder
+import clean
 
 
 __all__ = ['clean-folder']
